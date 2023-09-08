@@ -422,7 +422,9 @@ class FalconAttention(nn.Module):
         value_layer_ = value_layer.reshape(batch_size, num_kv_heads, -1, self.head_dim)
 
         if alibi is None:
+            print("Alibi is none")
             if hasattr(F, "scaled_dot_product_attention") and not output_attentions:
+
                 # TODO: deprecate this once we add FA2 support in Falcon
                 logger.warning_once(
                     "The current implementation of Falcon calls `torch.scaled_dot_product_attention` directly, this will be deprecated in the"
@@ -435,6 +437,7 @@ class FalconAttention(nn.Module):
                 )
                 attention_scores = None
             else:
+                print("Alibi is not none")
                 attention_scores = query_layer_ @ key_layer_.transpose(-1, -2)
                 attention_scores /= math.sqrt(self.head_dim)
 
