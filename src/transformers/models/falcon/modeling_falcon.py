@@ -422,14 +422,11 @@ class FalconAttention(nn.Module):
         value_layer_ = value_layer.reshape(batch_size, num_kv_heads, -1, self.head_dim)
 
         if alibi is None:
-            print("Alibi is none")
             if hasattr(F, "scaled_dot_product_attention") and not output_attentions:
 
                 # TODO: deprecate this once we add FA2 support in Falcon
                 logger.warning_once(
-                    "The current implementation of Falcon calls `torch.scaled_dot_product_attention` directly, this will be deprecated in the"
-                    " future in favor of the `BetterTransformer` API. Please install the latest optimum library with `pip install -U optimum` and call "
-                    "`model.to_bettertransformer()` to benefit from `torch.scaled_dot_product_attention` and future performance optimizations."
+                    "Flash Attention 2 babyyyyy"
                 )
 
                 attn_output = F.scaled_dot_product_attention(
