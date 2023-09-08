@@ -426,7 +426,7 @@ class FalconAttention(nn.Module):
             if hasattr(F, "scaled_dot_product_attention") and not output_attentions:
 
                 attn_output = flash_attn_func(
-                    query_layer_, key_layer_, value_layer_, attention_mask_float, 0.0, is_causal=False
+                    query_layer_, key_layer_, value_layer_, softmax_scale = attention_mask_float, dropout_p = 0.0, causal=False
                 )
                 attention_scores = None
             else:
