@@ -23,6 +23,7 @@ import torch.utils.checkpoint
 from torch import nn
 from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, LayerNorm, MSELoss
 from torch.nn import functional as F
+from flash_attn import flash_attn_func
 
 from ...modeling_outputs import (
     BaseModelOutputWithPastAndCrossAttentions,
@@ -424,17 +425,11 @@ class FalconAttention(nn.Module):
         if alibi is None:
             if hasattr(F, "scaled_dot_product_attention") and not output_attentions:
 
-                # TODO: deprecate this once we add FA2 support in Falcon
-                logger.warning_once(
-                    "Flash Attention 2 babyyyyy"
-                )
-
-                attn_output = F.scaled_dot_product_attention(
+                attn_output = flash_attn_func(
                     query_layer_, key_layer_, value_layer_, attention_mask_float, 0.0, is_causal=False
                 )
                 attention_scores = None
             else:
-                print("Alibi is not none")
                 attention_scores = query_layer_ @ key_layer_.transpose(-1, -2)
                 attention_scores /= math.sqrt(self.head_dim)
 
